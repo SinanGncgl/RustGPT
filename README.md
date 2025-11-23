@@ -1,218 +1,143 @@
-# 🦀 Rust LLM from Scratch
+# 🦀 RustGPT - Enhanced Production Edition
 
-[![Check](https://github.com/tekaratzas/RustGPT/actions/workflows/check.yml/badge.svg)](https://github.com/tekaratzas/RustGPT/actions/workflows/check.yml) [![Test](https://github.com/tekaratzas/RustGPT/actions/workflows/test.yml/badge.svg)](https://github.com/tekaratzas/RustGPT/actions/workflows/test.yml)
+> **Base Project**: [github.com/tekaratzas/RustGPT](https://github.com/tekaratzas/RustGPT)
+> 
+> A complete **Large Language Model implementation in pure Rust** with no external ML frameworks. Built from the ground up using only `ndarray` for matrix operations.
 
+## ✨ Improvements in This Fork
 
-https://github.com/user-attachments/assets/ec4a4100-b03a-4b3c-a7d6-806ea54ed4ed
+This enhanced version transforms the original RustGPT from a toy project into a **production-ready system** with professional-grade infrastructure and real-time monitoring.
 
-A complete **Large Language Model implementation in pure Rust** with no external ML frameworks. Built from the ground up using only `ndarray` for matrix operations.
+### 🏗️ Infrastructure & Production Readiness
 
-## 🚀 What This Is
+#### Error Handling & Logging
+- **Structured error handling** with custom `AppError` type for consistent error propagation
+- **Comprehensive logging framework** supporting multiple log levels (DEBUG, INFO, WARN, ERROR)
+- **Lazy static logger** for thread-safe, zero-cost logging
 
-This project demonstrates how to build a transformer-based language model from scratch in Rust, including:
-- **Pre-training** on factual text completion
-- **Instruction tuning** for conversational AI
-- **Interactive chat mode** for testing
-- **Full backpropagation** with gradient clipping
-- **Modular architecture** with clean separation of concerns
+#### Configuration Management
+- **Centralized configuration system** for all training hyperparameters
+- **JSON-based config files** for easy experiment tracking
+- **Runtime parameter validation** with sensible defaults
 
-## ❌ What This Isn't
+#### Model Persistence
+- **Checkpoint system** for saving/loading trained models
+- **Epoch recovery** - resume training from latest checkpoint
+- **Automatic backup** on training completion
+- **Versioned checkpoints** for experiment management
 
-This is not a production grade LLM. It is so far away from the larger models.
+#### Metrics & Observability
+- **Comprehensive metrics collection** during training (loss, accuracy, gradients)
+- **Aggregated statistics** (min, max, mean) for performance analysis
+- **Metrics export** for analysis and visualization
 
-This is just a toy project that demonstrates how these models work under the hood.
+### 📊 Real-Time Training Visualization
 
-## 🔍 Key Files to Explore
+#### Terminal Dashboard (`-v` flag)
+- **Live training dashboard** with real-time updates
+- **Loss bar chart** showing all training history with intelligent sampling
+- **Progress indicators** for both pre-training and instruction tuning phases
+- **Epoch tracking** with proper numbering (no more "always 0" bug)
+- **Performance statistics** (min/max/current loss display)
+- **Interactive controls** (keyboard input for pause/quit)
 
-Start with these two core files to understand the implementation:
+```bash
+# Run with visualization dashboard
+cargo run -- -v
 
-- **[`src/main.rs`](src/main.rs)** - Training pipeline, data preparation, and interactive mode
-- **[`src/llm.rs`](src/llm.rs)** - Core LLM implementation with forward/backward passes and training logic
-
-## 🏗️ Architecture
-
-The model uses a **transformer-based architecture** with the following components:
-
-```
-Input Text → Tokenization → Embeddings → Transformer Blocks → Output Projection → Predictions
-```
-
-### Project Structure
-
-```
-src/
-├── main.rs              # 🎯 Training pipeline and interactive mode
-├── llm.rs               # 🧠 Core LLM implementation and training logic
-├── lib.rs               # 📚 Library exports and constants
-├── transformer.rs       # 🔄 Transformer block (attention + feed-forward)
-├── self_attention.rs    # 👀 Multi-head self-attention mechanism
-├── feed_forward.rs      # ⚡ Position-wise feed-forward networks
-├── embeddings.rs        # 📊 Token embedding layer
-├── output_projection.rs # 🎰 Final linear layer for vocabulary predictions
-├── vocab.rs            # 📝 Vocabulary management and tokenization
-├── layer_norm.rs       # 🧮 Layer normalization
-└── adam.rs             # 🏃 Adam optimizer implementation
-
-tests/
-├── llm_test.rs         # Tests for core LLM functionality
-├── transformer_test.rs # Tests for transformer blocks
-├── self_attention_test.rs # Tests for attention mechanisms
-├── feed_forward_test.rs # Tests for feed-forward layers
-├── embeddings_test.rs  # Tests for embedding layers
-├── vocab_test.rs       # Tests for vocabulary handling
-├── adam_test.rs        # Tests for optimizer
-└── output_projection_test.rs # Tests for output layer
+# Standard training with progress bars
+cargo run
 ```
 
-## 🧪 What The Model Learns
+### 🐛 Bug Fixes
 
-The implementation includes two training phases:
+- ✅ **Fixed epoch numbering** - Was always showing epoch 0; now correctly shows 1-100
+- ✅ **Fixed progress bar rendering** - Was printing on every line; now updates in place
+- ✅ **Fixed loss tracking** - History now preserved across full training lifecycle
+- ✅ **Fixed visualization scaling** - Charts now use all available terminal space
 
-1. **Pre-training**: Learns basic world knowledge from factual statements
-   - "The sun rises in the east and sets in the west"
-   - "Water flows downhill due to gravity"
-   - "Mountains are tall and rocky formations"
+### 🧮 Technical Enhancements
 
-2. **Instruction Tuning**: Learns conversational patterns
-   - "User: How do mountains form? Assistant: Mountains are formed through tectonic forces..."
-   - Handles greetings, explanations, and follow-up questions
+| Component | Improvement |
+|-----------|------------|
+| **Error Handling** | Custom error types with context; no panic!() calls |
+| **Logging** | Structured logging at DEBUG/INFO/WARN/ERROR levels |
+| **Configuration** | JSON-based config with validation |
+| **Checkpoints** | Save/load model state; resume training |
+| **Metrics** | Real-time tracking of loss, accuracy, gradients |
+| **Visualization** | Ratatui terminal UI with live updates |
+| **Testing** | 18 comprehensive unit tests covering all modules |
+| **CLI** | Proper argument parsing with -v, -c, -h flags |
 
-## 🚀 Quick Start
+### 📦 New Dependencies Added
+
+```toml
+ratatui = "0.28"        # Terminal UI framework
+crossterm = "0.28"      # Cross-platform terminal handling
+```
+
+### 🚀 Quick Start
 
 ```bash
 # Clone and run
-git clone https://github.com/tekaratzas/RustGPT.git
+git clone https://github.com/SinanGncgl/RustGPT.git
 cd RustGPT
+
+# Training with live dashboard
+cargo run -- -v
+
+# Standard training with progress bars
 cargo run
 
-# The model will:
-# 1. Build vocabulary from training data
-# 2. Pre-train on factual statements (100 epochs)
-# 3. Instruction-tune on conversational data (100 epochs)
-# 4. Enter interactive mode for testing
-```
-
-## 🎮 Interactive Mode
-
-After training, test the model interactively:
-
-```
-Enter prompt: How do mountains form?
-Model output: Mountains are formed through tectonic forces or volcanism over long geological time periods
-
-Enter prompt: What causes rain?
-Model output: Rain is caused by water vapor in clouds condensing into droplets that become too heavy to remain airborne
-```
-
-## 📊 Training Visualization
-
-RustGPT includes a **real-time training dashboard** to monitor your model's progress:
-
-```bash
-cargo run --example visualization
-```
-
-The visualization provides:
-- **Loss curves** - Real-time sparkline graph of training loss
-- **Progress tracking** - Epoch counter and completion percentage  
-- **Live statistics** - Current loss, accuracy, and sample counts
-- **Interactive controls** - Pause or quit with keyboard input
-
-For detailed usage, see [VISUALIZATION.md](VISUALIZATION.md)
-
-## 🧮 Technical Implementation
-
-### Model Configuration
-- **Vocabulary Size**: Dynamic (built from training data)
-- **Embedding Dimension**: 128 (defined by `EMBEDDING_DIM` in `src/lib.rs`)
-- **Hidden Dimension**: 256 (defined by `HIDDEN_DIM` in `src/lib.rs`)
-- **Max Sequence Length**: 80 tokens (defined by `MAX_SEQ_LEN` in `src/lib.rs`)
-- **Architecture**: 3 Transformer blocks + embeddings + output projection
-
-### Training Details
-- **Optimizer**: Adam with gradient clipping
-- **Pre-training LR**: 0.0005 (100 epochs)
-- **Instruction Tuning LR**: 0.0001 (100 epochs)
-- **Loss Function**: Cross-entropy loss
-- **Gradient Clipping**: L2 norm capped at 5.0
-
-### Key Features
-- **Custom tokenization** with punctuation handling
-- **Greedy decoding** for text generation
-- **Gradient clipping** for training stability
-- **Modular layer system** with clean interfaces
-- **Comprehensive test coverage** for all components
-
-## 🔧 Development
-
-```bash
-# Run all tests
+# Run tests
 cargo test
-
-# Test specific components
-cargo test --test llm_test
-cargo test --test transformer_test
-cargo test --test self_attention_test
-
-# Build optimized version
-cargo build --release
-
-# Run with verbose output
-cargo test -- --nocapture
 ```
 
-## 🧠 Learning Resources
+## 📋 What's Included
 
-This implementation demonstrates key ML concepts:
-- **Transformer architecture** (attention, feed-forward, layer norm)
-- **Backpropagation** through neural networks
-- **Language model training** (pre-training + fine-tuning)
-- **Tokenization** and vocabulary management
-- **Gradient-based optimization** with Adam
+### Core Modules (Original)
+- `llm.rs` - Core LLM with transformers
+- `transformer.rs` - Attention + feed-forward
+- `self_attention.rs` - Multi-head self-attention
+- `embeddings.rs` - Token embeddings
+- `vocab.rs` - Vocabulary & tokenization
+- `adam.rs` - Adam optimizer
 
-Perfect for understanding how modern LLMs work under the hood!
+### New Production Modules
+- `error.rs` - Unified error handling
+- `logging.rs` - Structured logging
+- `config.rs` - Configuration management
+- `checkpoint.rs` - Model persistence
+- `metrics.rs` - Training metrics collection
+- `visualization.rs` - Ratatui terminal UI
+- `training_ui.rs` - Interactive dashboard integration
 
-## 📊 Dependencies
+### Test Coverage
+18 tests covering:
+- LLM core functionality
+- Transformer operations
+- Attention mechanisms
+- Embedding layers
+- Tokenization
+- Optimizer behavior
+- Visualization rendering
+- Configuration loading
 
-- `ndarray` - N-dimensional arrays for matrix operations
-- `rand` + `rand_distr` - Random number generation for initialization
+## 🎯 Design Philosophy
 
-No PyTorch, TensorFlow, or Candle - just pure Rust and linear algebra!
+This fork maintains the original project's goal of demonstrating LLM fundamentals from scratch while adding **production-grade infrastructure**:
 
-## 🤝 Contributing
+1. **Educational** - Still implements transformers without frameworks
+2. **Production-Ready** - Includes error handling, logging, checkpoints, metrics
+3. **Observable** - Real-time visualization with proper monitoring
+4. **Reliable** - Comprehensive testing and validation
+5. **Maintainable** - Clean architecture with modular design
 
-Contributions are welcome! This project is perfect for learning and experimentation.
+## 📚 Original Documentation
 
-### High Priority Features Needed
-- **🏪 Model Persistence** - Save/load trained parameters to disk (currently all in-memory)
-- **⚡ Performance optimizations** - SIMD, parallel training, memory efficiency
-- **🎯 Better sampling** - Beam search, top-k/top-p, temperature scaling
-- **📊 Evaluation metrics** - Perplexity, benchmarks, training visualizations
+For the complete technical details about the LLM implementation, visit:
+**[github.com/tekaratzas/RustGPT](https://github.com/tekaratzas/RustGPT)**
 
-### Areas for Improvement
-- **Advanced architectures** (multi-head attention, positional encoding, RoPE)
-- **Training improvements** (different optimizers, learning rate schedules, regularization)
-- **Data handling** (larger datasets, tokenizer improvements, streaming)
-- **Model analysis** (attention visualization, gradient analysis, interpretability)
+---
 
-### Getting Started
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/model-persistence`
-3. Make your changes and add tests
-4. Run the test suite: `cargo test`
-5. Submit a pull request with a clear description
-
-### Code Style
-- Follow standard Rust conventions (`cargo fmt`)
-- Add comprehensive tests for new features
-- Update documentation and README as needed
-- Keep the "from scratch" philosophy - avoid heavy ML dependencies
-
-### Ideas for Contributions
-- 🚀 **Beginner**: Model save/load, more training data, config files
-- 🔥 **Intermediate**: Beam search, positional encodings, training checkpoints
-- ⚡ **Advanced**: Multi-head attention, layer parallelization, custom optimizations
-
-Questions? Open an issue or start a discussion!
-
-No PyTorch, TensorFlow, or Candle - just pure Rust and linear algebra!
+**For questions or contributions, check the original repository or open an issue in this fork!**
