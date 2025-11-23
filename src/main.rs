@@ -10,9 +10,9 @@ use std::path::PathBuf;
 use tracing::info;
 
 use llm::{
-    Config, Dataset, DatasetType, EMBEDDING_DIM, Embeddings, HIDDEN_DIM, LLM, MAX_SEQ_LEN,
-    Result as LlmResult, Vocab, init_logging, output_projection::OutputProjection,
-    transformer::TransformerBlock,
+    init_logging, output_projection::OutputProjection, transformer::TransformerBlock, Config,
+    Dataset, DatasetType, Embeddings, Result as LlmResult, Vocab, EMBEDDING_DIM, HIDDEN_DIM, LLM,
+    MAX_SEQ_LEN,
 };
 
 /// Command-line arguments for the LLM
@@ -184,7 +184,7 @@ fn main() -> LlmResult<()> {
         pb.set_style(
             indicatif::ProgressStyle::default_bar()
                 .template("{msg}\n[{bar:40.cyan/blue}] {pos}/{len}")
-                .unwrap()
+                .unwrap(),
         );
         llm.train_with_progress(
             pretraining_examples.clone(),
@@ -223,7 +223,7 @@ fn main() -> LlmResult<()> {
         pb.set_style(
             indicatif::ProgressStyle::default_bar()
                 .template("{msg}\n[{bar:40.cyan/blue}] {pos}/{len}")
-                .unwrap()
+                .unwrap(),
         );
         llm.train_with_progress(
             chat_training_examples.clone(),

@@ -1,6 +1,6 @@
 use llm::{
-    EMBEDDING_DIM, Embeddings, HIDDEN_DIM, LLM, Layer, MAX_SEQ_LEN, Vocab,
-    output_projection::OutputProjection, transformer::TransformerBlock,
+    output_projection::OutputProjection, transformer::TransformerBlock, Embeddings, Layer, Vocab,
+    EMBEDDING_DIM, HIDDEN_DIM, LLM, MAX_SEQ_LEN,
 };
 use ndarray::Array2;
 

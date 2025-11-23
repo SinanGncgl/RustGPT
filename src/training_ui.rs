@@ -3,10 +3,15 @@
 //! This module provides a complete training loop that displays a Ratatui dashboard
 //! with live loss graphs, progress indicators, and training statistics.
 
-use crate::{LLM, visualization::{TrainingVisualizer, VisualizationConfig, init_terminal, restore_terminal, check_user_input}};
+use crate::{
+    visualization::{
+        check_user_input, init_terminal, restore_terminal, TrainingVisualizer, VisualizationConfig,
+    },
+    LLM,
+};
 use crossterm::event::KeyCode;
-use std::time::Duration;
 use indicatif::ProgressBar;
+use std::time::Duration;
 
 /// Run training with interactive visualization dashboard
 pub fn train_with_dashboard(
@@ -52,9 +57,12 @@ pub fn train_with_dashboard(
 
             // Forward pass
             let mut input = ndarray::Array2::zeros((1, input_ids.len()));
-            input
-                .row_mut(0)
-                .assign(&input_ids.iter().map(|&x| x as f32).collect::<ndarray::Array1<f32>>());
+            input.row_mut(0).assign(
+                &input_ids
+                    .iter()
+                    .map(|&x| x as f32)
+                    .collect::<ndarray::Array1<f32>>(),
+            );
 
             for layer in &mut llm.network {
                 input = layer.forward(&input);

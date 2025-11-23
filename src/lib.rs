@@ -38,17 +38,17 @@ pub mod logging;
 pub mod metrics;
 pub mod output_projection;
 pub mod self_attention;
-pub mod transformer;
 pub mod training_ui;
-pub mod vocab;
+pub mod transformer;
 pub mod visualization;
+pub mod vocab;
 
 // Re-export key types and functions for easier access
 pub use config::Config;
 pub use dataset_loader::{Dataset, DatasetType};
 pub use embeddings::Embeddings;
 pub use error::{LlmError, Result};
-pub use llm::{LLM, Layer};
+pub use llm::{Layer, LLM};
 pub use logging::{init_json_logging, init_logging};
 pub use metrics::Metrics;
 pub use vocab::Vocab;

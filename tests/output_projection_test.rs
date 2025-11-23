@@ -1,4 +1,4 @@
-use llm::{EMBEDDING_DIM, Layer, output_projection::OutputProjection};
+use llm::{output_projection::OutputProjection, Layer, EMBEDDING_DIM};
 use ndarray::Array2;
 
 #[test]

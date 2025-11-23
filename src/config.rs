@@ -78,6 +78,7 @@ pub struct OutputConfig {
 }
 
 impl Default for Config {
+    #[allow(clippy::derivable_impls)]
     fn default() -> Self {
         Config {
             model: ModelConfig::default(),

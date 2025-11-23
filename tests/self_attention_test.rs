@@ -1,4 +1,4 @@
-use llm::{EMBEDDING_DIM, Layer, self_attention::SelfAttention};
+use llm::{self_attention::SelfAttention, Layer, EMBEDDING_DIM};
 use ndarray::Array2;
 
 #[test]

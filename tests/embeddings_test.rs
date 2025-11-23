@@ -1,4 +1,4 @@
-use llm::{EMBEDDING_DIM, Embeddings, Layer, MAX_SEQ_LEN, Vocab};
+use llm::{Embeddings, Layer, Vocab, EMBEDDING_DIM, MAX_SEQ_LEN};
 
 #[test]
 fn test_embeddings_creation() {

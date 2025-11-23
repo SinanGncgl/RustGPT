@@ -2,7 +2,7 @@
 //!
 //! Provides structured logging with configurable levels and outputs.
 
-use tracing_subscriber::{EnvFilter, fmt, prelude::*};
+use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 /// Initialize the logging system with the specified filter level.
 ///

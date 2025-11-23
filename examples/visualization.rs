@@ -4,9 +4,9 @@
 //! with real-time loss graphs in the terminal.
 
 use llm::{
-    Config, Dataset, DatasetType, EMBEDDING_DIM, Embeddings, HIDDEN_DIM, LLM, 
-    Vocab, TrainingVisualizer, VisualizationConfig, init_logging,
-    output_projection::OutputProjection, transformer::TransformerBlock,
+    init_logging, output_projection::OutputProjection, transformer::TransformerBlock, Config,
+    Dataset, DatasetType, Embeddings, TrainingVisualizer, VisualizationConfig, Vocab,
+    EMBEDDING_DIM, HIDDEN_DIM, LLM,
 };
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -74,7 +74,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
 
     // Simulate training with visualization feedback
-    println!("Training for {} epochs...", config.training.pretraining_epochs);
+    println!(
+        "Training for {} epochs...",
+        config.training.pretraining_epochs
+    );
     println!("Loss History: ");
 
     for epoch in 0..config.training.pretraining_epochs.min(5) {

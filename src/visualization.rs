@@ -9,7 +9,7 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use ratatui::{
-    backend::{CrosstermBackend},
+    backend::CrosstermBackend,
     prelude::*,
     widgets::{Block, Borders, Gauge, Paragraph, Widget},
     Frame, Terminal,
@@ -112,48 +112,40 @@ impl TrainingVisualizer {
     /// Create a line chart widget for loss visualization
     fn create_loss_line_chart(&self) -> impl Widget {
         let mut chart_content = String::new();
-        
+
         if self.loss_history.is_empty() {
             chart_content = "Waiting for data...".to_string();
         } else {
             // Find min and max for scaling
-            let max_loss = self.loss_history
-                .iter()
-                .copied()
-                .max()
-                .unwrap_or(1000) as f64 / 10000.0;
-            let min_loss = self.loss_history
-                .iter()
-                .copied()
-                .min()
-                .unwrap_or(0) as f64 / 10000.0;
-            
+            let max_loss = self.loss_history.iter().copied().max().unwrap_or(1000) as f64 / 10000.0;
+            let min_loss = self.loss_history.iter().copied().min().unwrap_or(0) as f64 / 10000.0;
+
             let range = (max_loss - min_loss).max(0.01);
-            
+
             // Simple bar chart - show all data
             let height = 10;
             let len = self.loss_history.len();
-            
+
             // Sample data if too many epochs to fit on screen
             let display_width = 60;
             let step = (len / display_width).max(1);
-            let displayed_len = (len + step - 1) / step;
-            
+            let displayed_len = len.div_ceil(step);
+
             // Build bar chart
             for row in 0..height {
                 let level = max_loss - (range * row as f64 / height as f64);
                 chart_content.push_str(&format!("{:6.2} │ ", level));
-                
+
                 for display_idx in 0..displayed_len {
                     let actual_idx = display_idx * step;
                     if actual_idx < len {
                         let loss_u64 = self.loss_history[actual_idx];
                         let loss = (loss_u64 as f64) / 10000.0;
-                        
+
                         // Calculate if this bar should show at this height
                         let bar_height = ((loss - min_loss) / range * height as f64) as usize;
                         let current_height = height - row - 1;
-                        
+
                         if bar_height > current_height {
                             chart_content.push('█');
                         } else {
@@ -163,12 +155,12 @@ impl TrainingVisualizer {
                 }
                 chart_content.push('\n');
             }
-            
+
             // X-axis
             chart_content.push_str("       └");
             chart_content.push_str(&"─".repeat(displayed_len));
             chart_content.push('\n');
-            
+
             // Labels
             chart_content.push_str(&format!(
                 "        0{}{}\n",
@@ -177,7 +169,9 @@ impl TrainingVisualizer {
             ));
             chart_content.push_str(&format!(
                 "Min: {:.4} | Max: {:.4} | Current: {:.4}",
-                min_loss, max_loss, self.current_loss()
+                min_loss,
+                max_loss,
+                self.current_loss()
             ));
         }
 
@@ -217,13 +211,14 @@ impl TrainingVisualizer {
         // Progress gauge
         let progress = (self.current_epoch as f64 / self.total_epochs.max(1) as f64) * 100.0;
         let gauge = Gauge::default()
-            .block(Block::default().title("Epoch Progress").borders(Borders::ALL))
+            .block(
+                Block::default()
+                    .title("Epoch Progress")
+                    .borders(Borders::ALL),
+            )
             .gauge_style(Style::default().fg(Color::Green).bold())
             .percent(progress as u16)
-            .label(format!(
-                "{}/{}",
-                self.current_epoch, self.total_epochs
-            ));
+            .label(format!("{}/{}", self.current_epoch, self.total_epochs));
         frame.render_widget(gauge, chunks[1]);
 
         // Loss graph and stats
@@ -273,14 +268,9 @@ pub fn init_terminal() -> io::Result<Terminal<CrosstermBackend<io::Stdout>>> {
 }
 
 /// Restore terminal to normal state
-pub fn restore_terminal(
-    terminal: &mut Terminal<CrosstermBackend<io::Stdout>>,
-) -> io::Result<()> {
+pub fn restore_terminal(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>) -> io::Result<()> {
     disable_raw_mode()?;
-    execute!(
-        terminal.backend_mut(),
-        LeaveAlternateScreen,
-    )?;
+    execute!(terminal.backend_mut(), LeaveAlternateScreen,)?;
     terminal.show_cursor()?;
     Ok(())
 }

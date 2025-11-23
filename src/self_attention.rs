@@ -3,7 +3,7 @@ use std::f32;
 use ndarray::Array2;
 use rand_distr::{Distribution, Normal};
 
-use crate::{EMBEDDING_DIM, adam::Adam, llm::Layer};
+use crate::{adam::Adam, llm::Layer, EMBEDDING_DIM};
 
 pub struct SelfAttention {
     pub embedding_dim: usize,

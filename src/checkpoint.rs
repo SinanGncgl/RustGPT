@@ -58,14 +58,14 @@ impl Checkpoint {
             bincode::encode_to_vec(self, bincode::config::standard()).map_err(|e| {
                 LlmError::serialization(format!("Failed to serialize checkpoint: {}", e))
             })?;
-        std::fs::write(path, serialized).map_err(|e| LlmError::IoError(e))?;
+        std::fs::write(path, serialized).map_err(LlmError::IoError)?;
         tracing::info!("Checkpoint saved to {:?}", path);
         Ok(())
     }
 
     /// Load checkpoint from file.
     pub fn load(path: &Path) -> Result<Self> {
-        let data = std::fs::read(path).map_err(|e| LlmError::IoError(e))?;
+        let data = std::fs::read(path).map_err(LlmError::IoError)?;
         let (checkpoint, _) =
             bincode::decode_from_slice::<Self, _>(&data, bincode::config::standard()).map_err(
                 |e| LlmError::serialization(format!("Failed to deserialize checkpoint: {}", e)),
@@ -85,7 +85,7 @@ pub struct CheckpointManager {
 impl CheckpointManager {
     /// Create a new checkpoint manager.
     pub fn new(checkpoint_dir: &Path, keep_best: bool, max_checkpoints: usize) -> Result<Self> {
-        std::fs::create_dir_all(checkpoint_dir).map_err(|e| LlmError::IoError(e))?;
+        std::fs::create_dir_all(checkpoint_dir).map_err(LlmError::IoError)?;
         Ok(Self {
             checkpoint_dir: checkpoint_dir.to_path_buf(),
             keep_best,
@@ -121,11 +121,11 @@ impl CheckpointManager {
     fn list_checkpoints(&self) -> Result<Vec<(std::path::PathBuf, f32)>> {
         let mut checkpoints = Vec::new();
 
-        for entry in std::fs::read_dir(&self.checkpoint_dir).map_err(|e| LlmError::IoError(e))? {
-            let entry = entry.map_err(|e| LlmError::IoError(e))?;
+        for entry in std::fs::read_dir(&self.checkpoint_dir).map_err(LlmError::IoError)? {
+            let entry = entry.map_err(LlmError::IoError)?;
             let path = entry.path();
 
-            if path.extension().map_or(false, |ext| ext == "bin") {
+            if path.extension().is_some_and(|ext| ext == "bin") {
                 if let Ok(checkpoint) = Checkpoint::load(&path) {
                     checkpoints.push((path, checkpoint.loss));
                 }
@@ -142,7 +142,7 @@ impl CheckpointManager {
 
         while checkpoints.len() > self.max_checkpoints {
             if let Some((path, _)) = checkpoints.pop() {
-                std::fs::remove_file(&path).map_err(|e| LlmError::IoError(e))?;
+                std::fs::remove_file(&path).map_err(LlmError::IoError)?;
                 tracing::debug!("Removed old checkpoint: {:?}", path);
             }
         }

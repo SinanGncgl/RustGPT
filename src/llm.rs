@@ -3,8 +3,8 @@ use std::cmp::Ordering;
 use ndarray::{Array1, Array2, Axis};
 
 use crate::{
-    EMBEDDING_DIM, Embeddings, HIDDEN_DIM, MAX_SEQ_LEN, Vocab, output_projection::OutputProjection,
-    transformer::TransformerBlock,
+    output_projection::OutputProjection, transformer::TransformerBlock, Embeddings, Vocab,
+    EMBEDDING_DIM, HIDDEN_DIM, MAX_SEQ_LEN,
 };
 pub trait Layer {
     fn layer_type(&self) -> &str;
@@ -149,11 +149,24 @@ impl LLM {
         self.train_with_progress(data, epochs, lr, None);
     }
 
-    pub fn train_with_progress(&mut self, data: Vec<&str>, epochs: usize, lr: f32, progress: Option<&indicatif::ProgressBar>) {
+    pub fn train_with_progress(
+        &mut self,
+        data: Vec<&str>,
+        epochs: usize,
+        lr: f32,
+        progress: Option<&indicatif::ProgressBar>,
+    ) {
         self.train_with_visualizer(data, epochs, lr, progress, None);
     }
 
-    pub fn train_with_visualizer(&mut self, data: Vec<&str>, epochs: usize, lr: f32, progress: Option<&indicatif::ProgressBar>, mut visualizer: Option<&mut crate::visualization::TrainingVisualizer>) {
+    pub fn train_with_visualizer(
+        &mut self,
+        data: Vec<&str>,
+        epochs: usize,
+        lr: f32,
+        progress: Option<&indicatif::ProgressBar>,
+        mut visualizer: Option<&mut crate::visualization::TrainingVisualizer>,
+    ) {
         let tokenized_data = data
             .iter()
             .map(|input| self.tokenize(input))
@@ -168,7 +181,7 @@ impl LLM {
 
                 // 1. Slice input and targets
                 let input_ids = &training_row[..training_row.len() - 1]; // Exclude the last token
-                let target_ids = &training_row[1..]; // This is a vector. Each element is the index in the vocab. 
+                let target_ids = &training_row[1..]; // This is a vector. Each element is the index in the vocab.
 
                 // Forward pass
                 let mut input: Array2<f32> = Array2::zeros((1, input_ids.len()));

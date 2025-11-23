@@ -8,9 +8,9 @@
 //! - Metrics tracking
 
 use llm::{
-    Checkpoint, CheckpointManager, Config, Dataset, DatasetType, EMBEDDING_DIM, Embeddings,
-    HIDDEN_DIM, LLM, Metrics, Result, Vocab, init_logging, output_projection::OutputProjection,
-    transformer::TransformerBlock,
+    init_logging, output_projection::OutputProjection, transformer::TransformerBlock, Checkpoint,
+    CheckpointManager, Config, Dataset, DatasetType, Embeddings, Metrics, Result, Vocab,
+    EMBEDDING_DIM, HIDDEN_DIM, LLM,
 };
 use std::io::Write;
 use std::path::Path;
@@ -145,11 +145,8 @@ fn main() -> Result<()> {
             }
             cmd if cmd.starts_with("save ") => {
                 let path = &cmd[5..];
-                match std::path::Path::new(path).parent() {
-                    Some(parent) => {
-                        std::fs::create_dir_all(parent)?;
-                    }
-                    None => {}
+                if let Some(parent) = std::path::Path::new(path).parent() {
+                    std::fs::create_dir_all(parent)?;
                 }
                 let checkpoint = Checkpoint::new(1, metrics.avg_loss(), "example");
                 checkpoint.save(Path::new(path))?;
