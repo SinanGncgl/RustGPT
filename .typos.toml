@@ -1,0 +1,16 @@
+# Typos configuration for RustGPT
+
+[default]
+# Define project-specific exceptions for false positives
+extend-ignore-identifiers-re = [
+  # Library names that should not be corrected
+  "(?i)Ratatui",  # Terminal UI library
+  "ratatui",      # Terminal UI library
+  "(?i)RTO",      # Recovery Time Objective acronym
+]
+
+[default.extend-words]
+# Add words that are valid in this project but not in the default dictionary
+Ratatui = "Ratatui"
+ratatui = "ratatui"
+RTO = "RTO"
