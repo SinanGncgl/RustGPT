@@ -104,6 +104,22 @@ Enter prompt: What causes rain?
 Model output: Rain is caused by water vapor in clouds condensing into droplets that become too heavy to remain airborne
 ```
 
+## 📊 Training Visualization
+
+RustGPT includes a **real-time training dashboard** to monitor your model's progress:
+
+```bash
+cargo run --example visualization
+```
+
+The visualization provides:
+- **Loss curves** - Real-time sparkline graph of training loss
+- **Progress tracking** - Epoch counter and completion percentage  
+- **Live statistics** - Current loss, accuracy, and sample counts
+- **Interactive controls** - Pause or quit with keyboard input
+
+For detailed usage, see [VISUALIZATION.md](VISUALIZATION.md)
+
 ## 🧮 Technical Implementation
 
 ### Model Configuration

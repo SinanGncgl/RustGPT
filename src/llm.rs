@@ -146,6 +146,14 @@ impl LLM {
     }
 
     pub fn train(&mut self, data: Vec<&str>, epochs: usize, lr: f32) {
+        self.train_with_progress(data, epochs, lr, None);
+    }
+
+    pub fn train_with_progress(&mut self, data: Vec<&str>, epochs: usize, lr: f32, progress: Option<&indicatif::ProgressBar>) {
+        self.train_with_visualizer(data, epochs, lr, progress, None);
+    }
+
+    pub fn train_with_visualizer(&mut self, data: Vec<&str>, epochs: usize, lr: f32, progress: Option<&indicatif::ProgressBar>, mut visualizer: Option<&mut crate::visualization::TrainingVisualizer>) {
         let tokenized_data = data
             .iter()
             .map(|input| self.tokenize(input))
@@ -195,11 +203,16 @@ impl LLM {
                 }
             }
 
-            println!(
-                "Epoch {}: Loss = {:.4}",
-                epoch,
-                total_loss / tokenized_data.len() as f32
-            );
+            let avg_loss = total_loss / tokenized_data.len() as f32;
+            if let Some(pb) = progress {
+                pb.set_message(format!("Epoch {}: Loss = {:.4}", epoch + 1, avg_loss));
+            } else {
+                println!("Epoch {}: Loss = {:.4}", epoch + 1, avg_loss);
+            }
+            if let Some(vis) = &mut visualizer {
+                vis.record_loss(avg_loss);
+                vis.set_epoch(epoch + 1);
+            }
         }
     }
 
@@ -238,17 +251,17 @@ impl LLM {
             }
 
             // Add any remaining word
-            if !current_word.is_empty()
-                && let Some(token_id) = self.vocab.encode(&current_word)
-            {
-                tokens.push(token_id);
+            if !current_word.is_empty() {
+                if let Some(token_id) = self.vocab.encode(&current_word) {
+                    tokens.push(token_id);
+                }
             }
         }
 
         tokens
     }
 
-    fn softmax(logits: &Array2<f32>) -> Array2<f32> {
+    pub fn softmax(logits: &Array2<f32>) -> Array2<f32> {
         // logits is seq_len x vocab_size
         let mut result = logits.clone();
 
@@ -268,7 +281,7 @@ impl LLM {
         result
     }
 
-    fn greedy_decode(probs: &Array2<f32>) -> Vec<usize> {
+    pub fn greedy_decode(probs: &Array2<f32>) -> Vec<usize> {
         probs
             .map_axis(Axis(1), |row| {
                 row.iter()
@@ -280,7 +293,7 @@ impl LLM {
             .to_vec()
     }
 
-    fn cross_entropy_loss_step(probs: &Array2<f32>, target: &[usize]) -> f32 {
+    pub fn cross_entropy_loss_step(probs: &Array2<f32>, target: &[usize]) -> f32 {
         let mut loss = 0.0;
         for row_idx in 0..probs.shape()[0] {
             let prob_target = probs[[row_idx, target[row_idx]]]; // Get probability of correct token
@@ -290,7 +303,7 @@ impl LLM {
         loss / target.len() as f32
     }
 
-    fn compute_gradients_step(probs: &Array2<f32>, target: &[usize]) -> Array2<f32> {
+    pub fn compute_gradients_step(probs: &Array2<f32>, target: &[usize]) -> Array2<f32> {
         let mut grads = probs.clone(); // Start with softmax probabilities
 
         if probs.shape()[0] != target.len() {
@@ -310,7 +323,7 @@ impl LLM {
         grads
     }
 
-    fn clip_gradients(grads: &mut Array2<f32>, max_norm: f32) {
+    pub fn clip_gradients(grads: &mut Array2<f32>, max_norm: f32) {
         // Calculate L2 norm of gradients
         let norm = grads.iter().map(|&x| x * x).sum::<f32>().sqrt();
 

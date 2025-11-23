@@ -5,10 +5,13 @@ use llm::{Dataset, DatasetType};
 #[test]
 fn test_dataset_new_json() {
     let dataset = Dataset::new(
-        "data/pretraining_data.json".to_string(),
-        "data/chat_training_data.json".to_string(),
+        "data/pretraining_data.json",
+        "data/chat_training_data.json",
         DatasetType::JSON,
     );
+    assert!(dataset.is_ok(), "Dataset loading should succeed");
+
+    let dataset = dataset.unwrap();
     assert!(
         !dataset.pretraining_data.is_empty(),
         "Pretraining data should not be empty"
@@ -36,11 +39,11 @@ fn test_dataset_new_csv() {
     )
     .unwrap();
 
-    let dataset = Dataset::new(
-        pretraining_csv.to_string(),
-        chat_csv.to_string(),
-        DatasetType::CSV,
-    );
+    let dataset = Dataset::new(pretraining_csv, chat_csv, DatasetType::CSV);
+
+    assert!(dataset.is_ok(), "Dataset loading should succeed");
+    let dataset = dataset.unwrap();
+
     assert_eq!(
         dataset.pretraining_data[0],
         "The sun rises in the east and sets in the west </s>"

@@ -1,0 +1,63 @@
+# RustGPT Configuration File Example
+# Copy this to config.toml and customize as needed
+
+[model]
+# Embedding dimension for token representations
+embedding_dim = 128
+
+# Hidden dimension for feed-forward networks
+hidden_dim = 256
+
+# Maximum sequence length for model processing
+max_seq_len = 80
+
+# Number of transformer blocks
+num_blocks = 3
+
+# Vocabulary size (0 = dynamic from data)
+vocab_size = 0
+
+[training]
+# Number of epochs for pre-training phase
+pretraining_epochs = 50
+
+# Number of epochs for instruction tuning phase
+finetuning_epochs = 50
+
+# Learning rate for pre-training
+pretraining_lr = 0.0005
+
+# Learning rate for instruction tuning (typically lower)
+finetuning_lr = 0.0001
+
+# Gradient clipping threshold to prevent divergence
+gradient_clip = 5.0
+
+# Batch size for training
+batch_size = 32
+
+# Enable checkpoint saving
+checkpoint_enabled = true
+
+# Save checkpoint every N epochs
+checkpoint_interval = 10
+
+[data]
+# Path to pre-training data file
+pretraining_data = "data/pretraining_data.json"
+
+# Path to chat/instruction tuning data file
+chat_training_data = "data/chat_training_data.json"
+
+# Data format: "json" or "csv"
+format = "json"
+
+[output]
+# Directory to store checkpoints
+checkpoint_dir = "./checkpoints"
+
+# Logging level: "debug", "info", "warn", "error"
+log_level = "info"
+
+# Show progress bars during training
+show_progress = true
